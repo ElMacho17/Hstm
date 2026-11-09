@@ -1,0 +1,29 @@
+name: Expand Sloth Mobile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+
+      - name: Extract Android starter
+        run: |
+          mkdir -p /tmp/sloth-mobile
+          unzip -oq Sloth-Mobile-Android-Starter-0.1.0.zip -d /tmp/sloth-mobile
+          cp -a /tmp/sloth-mobile/. .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No hay cambios"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Extraer base Android de Sloth Mobile"
+          git push
